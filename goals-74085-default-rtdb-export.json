@@ -1,0 +1,44 @@
+{
+  "users": {
+    "hjYwW6b7xqcAiLYJSgFEUr4K78H3": {
+      "displayName": "Greatest Ever",
+      "email": "kikki_sawn@yahoo.com",
+      "settings": {
+        "filterBy": "all",
+        "hideComplete": false,
+        "mode": "system"
+      },
+      "goals": {
+        "020f2d1d-7ab5-4d8f-b3b8-ea90fc115a8a": {
+          "category": "long",
+          "completed": false,
+          "frequency": "weekly",
+          "lastUpdate": 1717556120204,
+          "level": 2,
+          "title": "create a goal app"
+        },
+        "1f6c9b4c-7ccc-4bcb-a04f-557c0087e92c": {
+          "category": "long",
+          "completed": true,
+          "frequency": "monthly",
+          "level": 3,
+          "title": "start business"
+        },
+        "1f6c9b4c-7ccc-4bcb-a04f-557c0087e92d": {
+          "category": "short",
+          "completed": false,
+          "frequency": "yearly",
+          "level": 4,
+          "title": "lol"
+        },
+        "3e5779c4-7054-4c65-bc5f-18729e55089f": {
+          "category": "short",
+          "completed": true,
+          "frequency": "daily",
+          "level": 1,
+          "title": "wtf"
+        }
+      }
+    }
+  }
+}
