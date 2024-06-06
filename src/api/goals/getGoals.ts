@@ -3,16 +3,17 @@ import { child, get, getDatabase, ref } from 'firebase/database'
 
 export const useGoalsQuery = (id?: string) => {
   return useQuery({
-    queryKey: ['goals'],
+    queryKey: ['goals', id],
     queryFn: async () => {
       const dbRef = ref(getDatabase())
-      console.log('called it again')
+
       try {
         const snapshot = await get(child(dbRef, `users/${id}/goals/`))
 
         if (snapshot.exists()) {
-          console.log(snapshot.val())
-          return Promise.resolve(snapshot.val())
+          const goals = snapshot.val()
+
+          return Promise.resolve(goals)
         } else {
           console.log('No data available')
         }
@@ -21,6 +22,11 @@ export const useGoalsQuery = (id?: string) => {
         console.error(error)
       }
     },
+    select: (goals) =>
+      Object.keys(goals).map((goal) => ({
+        ...goals[goal],
+        id: goal,
+      })),
     enabled: !!id,
   })
 }

@@ -1,61 +1,37 @@
-import {
-  Checkbox,
-  FormControlLabel,
-  Stack,
-  Tooltip,
-  Typography,
-} from '@mui/material'
-import { useState } from 'react'
-// import { useState } from 'react'
-// import { v4 as uuidv4 } from 'uuid'
+import { Checkbox, FormControlLabel, Stack, Tooltip } from '@mui/material'
+import { updateGoal } from '../../../api/goals/updateGoals'
+import { useQueryClient } from '@tanstack/react-query'
 
 export type Frequency = 'daily' | 'weekly' | 'monthly' | 'yearly'
 export type Category = 'short' | 'long'
 
-export type Goal = {
-  title: string
-  level: number
-  completed: boolean
-  category: Category
-  frequency: Frequency
-  id: string
-}
+export default function GoalDisplay({ goal }: { goal: Goal }) {
+  const queryClient = useQueryClient()
 
-interface GoalProps extends Goal {
-  update: (checked: boolean) => void
-}
+  const handleChange = async () => {
+    const newGoal = { ...goal }
+    newGoal.completed = !goal.completed
 
-export default function GoalDisplay({
-  title,
-  // level,
-  // category,
-  // frequency,
-  // id,
-  completed,
-  update,
-}: GoalProps) {
-  // const [newGoal, setNewGoal] = useState('')
-  // const [goals, setGoals] = useState<GoalProps[]>(defaultGoals)
+    await updateGoal(newGoal)
 
-  const handleChange = () => {
-    update(!completed)
+    queryClient.invalidateQueries({ queryKey: ['goals'] })
   }
 
   return (
     <Stack alignItems="center" spacing={2} data-testid="welcomePage">
       <Stack justifyContent="space-between" direction="row" alignItems="center">
         <FormControlLabel
-          value={title}
+          value={goal.title}
           control={
             <Tooltip title="Toggle completed">
               <Checkbox
-                checked={completed}
+                checked={goal.completed}
                 onChange={handleChange}
                 inputProps={{ 'aria-label': 'controlled' }}
               />
             </Tooltip>
           }
-          label={title}
+          label={goal.title}
         />
       </Stack>
     </Stack>

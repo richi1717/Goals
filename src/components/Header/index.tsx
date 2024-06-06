@@ -31,19 +31,6 @@ const getName = (name: string) => {
 export default function Header() {
   const currentUser = useCurrentUser()
   const displayName = currentUser?.displayName ?? ''
-  // const { data: getUserData, isLoading } = useGetUsersQuery()
-  // console.log({ getUserData2: getUserData, isLoading })
-  // useEffect(() => {
-  //   const user = auth.currentUser
-  //   console.log('called it', user, auth.currentUser)
-  //   // if (user) {
-  //   setDisplayName(user?.displayName ?? '')
-  //   // }
-  // }, [getUserData, isLoading])
-  // console.log({ data }, 'heyyy')
-  // const displayName = data?.displayName ?? ''
-  // const theme = useTheme()
-  // const matches = useMediaQuery(theme.breakpoints.down('tablet'))
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {

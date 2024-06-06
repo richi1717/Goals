@@ -9,6 +9,7 @@ import { RouterProvider } from 'react-router-dom'
 import Router from './Router'
 import '@fontsource/roboto'
 import { SettingsProvider } from './components/SettingsContext'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 // import useInitialize from './api/useInitialize'
 
 const queryClient = new QueryClient()
@@ -43,6 +44,7 @@ function App() {
             <Stack sx={{ width: '100vw', height: '100vh' }} data-testid="yaaa">
               <RouterProvider router={Router} />
             </Stack>
+            <ReactQueryDevtools initialIsOpen={false} />
           </SettingsProvider>
         </QueryClientProvider>
       </ThemeProvider>
