@@ -1,6 +1,7 @@
 import {
   AppBar,
   Avatar,
+  Button,
   Container,
   IconButton,
   Stack,
@@ -14,6 +15,7 @@ import Drawer from './components/Drawer'
 import { useState } from 'react'
 import { deepPurple } from '@mui/material/colors'
 import useCurrentUser from '../../utils/useCurrentUser'
+import LoginUserFormDialog from '../LoginUserFormDialog'
 
 // interface HeaderProps {
 // }
@@ -29,9 +31,10 @@ const getName = (name: string) => {
 }
 
 export default function Header() {
-  const currentUser = useCurrentUser()
-  const displayName = currentUser?.displayName ?? ''
+  const { data: user, status } = useCurrentUser()
+  const displayName = user?.displayName ?? ''
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const [loginOpen, setLoginOpen] = useState(false)
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
@@ -47,22 +50,11 @@ export default function Header() {
       <AppBar position="fixed">
         <Container>
           <Toolbar disableGutters>
-            <Stack direction="row" alignItems="center" sx={{ flexGrow: 1 }}>
-              {/* <IconButton LinkComponent={RouterLink} href="/">
-                <ChurchOutlinedIcon sx={{ color: 'common.white' }} />
-              </IconButton>
-              <Button
-                sx={{
-                  textTransform: 'none',
-                  p: 2,
-                  color: 'common.white',
-                }}
-                onClick={() => console.log('doing good')}
-              >
-                Book & Chapter
-              </Button> */}
-            </Stack>
-            <Stack direction="row" flexGrow={0}>
+            <Stack direction="row" alignItems="center" sx={{ flexGrow: 1 }} />
+            <Stack direction="row" flexGrow={0} alignItems="center">
+              {status === 'error' && (
+                <Button onClick={() => setLoginOpen(true)}>Login</Button>
+              )}
               <IconButton
                 sx={{
                   textTransform: 'none',
@@ -90,6 +82,7 @@ export default function Header() {
           </Toolbar>
         </Container>
       </AppBar>
+      <LoginUserFormDialog open={loginOpen} setOpen={setLoginOpen} />
     </Stack>
   )
 }

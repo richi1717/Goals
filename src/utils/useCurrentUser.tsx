@@ -1,34 +1,21 @@
-import { getAuth, User } from 'firebase/auth'
-import { useEffect, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import { getAuth } from 'firebase/auth'
 
-const useCurrentUser = () => {
-  const [currentUser, setCurrentUser] = useState<User>({} as User)
+function useCurrentUser() {
+  return useQuery({
+    queryKey: ['user'],
+    retryDelay: 100,
+    retry: 10,
+    queryFn: async () => {
+      const auth = await getAuth()
 
-  useEffect(() => {
-    let intervalId: NodeJS.Timeout | undefined
-    let iteration = 0
+      if (auth?.currentUser) {
+        return Promise.resolve(auth?.currentUser)
+      }
 
-    if (!intervalId) {
-      intervalId = setInterval(() => {
-        const auth = getAuth()
-
-        if (auth.currentUser) {
-          setCurrentUser(auth.currentUser)
-          clearInterval(intervalId)
-        } else {
-          if (iteration < 10) {
-            console.log('Unauthorized: retry')
-            iteration++
-          } else {
-            console.log('Unauthorized: requires login')
-            clearInterval(intervalId)
-          }
-        }
-      }, 150)
-    }
-  }, [])
-
-  return currentUser
+      return Promise.reject('Unauthorized')
+    },
+  })
 }
 
 export default useCurrentUser

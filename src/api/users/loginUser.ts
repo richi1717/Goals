@@ -1,5 +1,6 @@
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
 import initialize from '../initialize'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 initialize()
 
@@ -25,3 +26,25 @@ export const loginUser = async (email: string, password: string) => {
 }
 
 export default loginUser
+
+// async function useLoginUser(email: string, password: string) {
+//   return remove(ref(db, `users/${userId}/goals/${goalId}`))
+//     .then(() => Promise.resolve(true))
+//     .catch((error: unknown) => {
+//       console.error(error)
+
+//       return Promise.reject('🤦')
+//     })
+// }
+
+export function useLoginUser() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ email, password }: { email: string; password: string }) =>
+      loginUser(email, password),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['user'] })
+    },
+  })
+}

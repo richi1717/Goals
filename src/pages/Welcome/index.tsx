@@ -1,9 +1,9 @@
-import { Button, Select, Stack, TextField } from '@mui/material'
+import { Button, Stack } from '@mui/material'
 import { useContext } from 'react'
 import GoalDisplay from './components/GoalDisplay'
 import { useGoals } from '../../api/goals/getGoals'
 import { createUser } from '../../api/users/createUser'
-import loginUser from '../../api/users/loginUser'
+import { useLoginUser } from '../../api/users/loginUser'
 import { getAuth } from 'firebase/auth'
 import logoutUser from '../../api/users/logoutUser'
 import updateUser from '../../api/users/updateUser'
@@ -12,8 +12,11 @@ import { SettingsContext } from '../../components/SettingsContext'
 import AddGoalFormDialog from './components/AddGoalFormDialog'
 
 export default function Welcome() {
-  const user = useCurrentUser()
+  const { data: user } = useCurrentUser()
+  const { mutate } = useLoginUser()
+  // console.log(status)
   const { data: goals } = useGoals(user?.uid)
+  // console.log(status)
 
   // const [newGoal, setNewGoal] = useState('')
   const { settings } = useContext(SettingsContext)
@@ -60,7 +63,7 @@ export default function Welcome() {
       </Button>
       <Button
         onClick={() => {
-          loginUser('kikki_sawn@yahoo.com', 'Password1717!')
+          mutate({ email: 'kikki_sawn@yahoo.com', password: 'Password1717!' })
         }}
       >
         login user
