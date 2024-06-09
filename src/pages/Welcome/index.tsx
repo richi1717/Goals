@@ -1,7 +1,7 @@
 import { Button, Stack } from '@mui/material'
 import { useContext } from 'react'
 import GoalDisplay from './components/GoalDisplay'
-import { useGoalsQuery } from '../../api/goals/getGoals'
+import { useGoals } from '../../api/goals/getGoals'
 import { createUser } from '../../api/users/createUser'
 import loginUser from '../../api/users/loginUser'
 import { getAuth } from 'firebase/auth'
@@ -12,11 +12,10 @@ import { SettingsContext } from '../../components/SettingsContext'
 
 export default function Welcome() {
   const user = useCurrentUser()
-  // console.log({ user })
-  const { data: goals } = useGoalsQuery(user?.uid)
+  const { data: goals } = useGoals(user?.uid)
 
   // const [newGoal, setNewGoal] = useState('')
-  const settings = useContext(SettingsContext)
+  const { settings } = useContext(SettingsContext)
   const hideComplete = settings?.hideComplete
   const filterBy = settings?.filterBy
 
@@ -29,12 +28,14 @@ export default function Welcome() {
 
     if (filterBy === 'all') {
       return filteredGoals.map((goal) => (
-        <GoalDisplay key={goal.id} goal={goal} />
+        <GoalDisplay key={goal.id} goal={goal} userId={user?.uid} />
       ))
     }
     return filteredGoals
       .filter((goal) => goal.frequency === filterBy)
-      .map((goal) => <GoalDisplay key={goal.id} goal={goal} />)
+      .map((goal) => (
+        <GoalDisplay key={goal.id} goal={goal} userId={user?.uid} />
+      ))
   }
 
   return (

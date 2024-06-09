@@ -1,20 +1,23 @@
 import { Checkbox, FormControlLabel, Stack, Tooltip } from '@mui/material'
-import { updateGoal } from '../../../api/goals/updateGoals'
-import { useQueryClient } from '@tanstack/react-query'
+import { useUpdateGoal } from '../../../api/goals/updateGoals'
 
 export type Frequency = 'daily' | 'weekly' | 'monthly' | 'yearly'
 export type Category = 'short' | 'long'
 
-export default function GoalDisplay({ goal }: { goal: Goal }) {
-  const queryClient = useQueryClient()
+export default function GoalDisplay({
+  goal,
+  userId,
+}: {
+  goal: Goal
+  userId?: string
+}) {
+  const { mutate } = useUpdateGoal(userId)
 
   const handleChange = async () => {
     const newGoal = { ...goal }
     newGoal.completed = !goal.completed
 
-    await updateGoal(newGoal)
-
-    queryClient.invalidateQueries({ queryKey: ['goals'] })
+    mutate(newGoal)
   }
 
   return (

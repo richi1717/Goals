@@ -20,18 +20,15 @@ import {
 import ToggleColorMode from '../../ToggleColorMode'
 import { useNavigate } from 'react-router-dom'
 import CloseIcon from '@mui/icons-material/Close'
-import { useContext, useEffect, useState } from 'react'
-import { Frequency } from '../../../pages/Welcome/components/GoalDisplay'
+import { useContext } from 'react'
 import logoutUser from '../../../api/users/logoutUser'
-import { SettingsContext, SettingsDispatchContext } from '../../SettingsContext'
+import { Settings, SettingsContext } from '../../SettingsContext'
 
 interface DrawerProps {
   anchorEl: null | HTMLElement
   setAnchorEl: () => void
   displayName?: string
 }
-
-type Filter = 'all' | Frequency
 
 export default function Drawer({
   anchorEl,
@@ -41,15 +38,18 @@ export default function Drawer({
   const isAdminOpen = Boolean(anchorEl)
   const navigate = useNavigate()
   // const [filterBy, setFilterBy] = useState<Filter>('all')
-  const settings = useContext(SettingsContext)
+  const { settings, dispatch } = useContext(SettingsContext)
+
   const filterBy = settings?.filterBy
   const hideComplete = settings?.hideComplete
   // const [hideComplete, setHideComplete] = useState(false)
-  const dispatch = useContext(SettingsDispatchContext)
 
   const handleChange = (event: SelectChangeEvent) => {
     // setFilterBy(event.target.value as Filter)
-    dispatch({ type: 'updateFilterBy', filterBy: event.target.value })
+    dispatch({
+      type: 'updateFilterBy',
+      filterBy: event.target.value as Settings['filterBy'],
+    })
   }
 
   const handleClose = () => {

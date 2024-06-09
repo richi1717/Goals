@@ -10,12 +10,10 @@ import Router from './Router'
 import '@fontsource/roboto'
 import { SettingsProvider } from './components/SettingsContext'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
-// import useInitialize from './api/useInitialize'
 
 const queryClient = new QueryClient()
 
 function App() {
-  // useInitialize()
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)')
   const [mode, setMode] = React.useState<Mode>(
     prefersDarkMode ? 'dark' : 'light',
