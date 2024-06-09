@@ -1,13 +1,10 @@
-import { getDatabase, ref, update } from 'firebase/database'
+import { getDatabase, ref, remove } from 'firebase/database'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+
 const db = getDatabase()
 
-async function updateGoal(goal: Goal, userId?: string) {
-  const { id, ...newGoal } = goal
-
-  return update(ref(db, `users/${userId}/goals/${id}`), {
-    ...newGoal,
-  })
+async function deleteGoal(goalId: string, userId?: string) {
+  return remove(ref(db, `users/${userId}/goals/${goalId}`))
     .then(() => Promise.resolve(true))
     .catch((error: unknown) => {
       console.error(error)
@@ -16,12 +13,12 @@ async function updateGoal(goal: Goal, userId?: string) {
     })
 }
 
-export function useUpdateGoal(userId?: string) {
+export function useDeleteGoal(userId?: string) {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (goal: Goal) => updateGoal(goal, userId),
-    onMutate: async ({ id, ...goal }: Goal) => {
+    mutationFn: (goalId: string) => deleteGoal(goalId, userId),
+    onMutate: async (goalId: string) => {
       await queryClient.cancelQueries({
         queryKey: ['goals', 'list', { userId }],
       })
@@ -30,8 +27,17 @@ export function useUpdateGoal(userId?: string) {
 
       queryClient.setQueryData(
         ['goals', 'list', { userId }],
-        (previousGoals) =>
-          previousGoals ? { ...previousGoals, [id]: goal } : previousGoals,
+        (previousGoals) => {
+          if (previousGoals) {
+            const typedGoals: { [key: string]: string | boolean } = {
+              ...previousGoals,
+            }
+            delete typedGoals[goalId]
+
+            return typedGoals
+          }
+          return previousGoals
+        },
       )
 
       return () => {

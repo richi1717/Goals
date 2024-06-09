@@ -1,8 +1,5 @@
 import { Checkbox, FormControlLabel, Stack, Tooltip } from '@mui/material'
-import { useUpdateGoal } from '../../../api/goals/updateGoals'
-
-export type Frequency = 'daily' | 'weekly' | 'monthly' | 'yearly'
-export type Category = 'short' | 'long'
+import useUpdateGoal from '../../../api/goals/useUpdateGoal'
 
 export default function GoalDisplay({
   goal,

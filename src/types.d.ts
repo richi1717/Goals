@@ -1,8 +1,10 @@
+type Frequency = 'daily' | 'weekly' | 'monthly' | 'yearly' | ''
+
 interface Goal {
   title: string
-  level: number
+  level: 'A' | 'B' | 'C'
   completed: boolean
-  category: Category
+  recurring: boolean
   frequency: Frequency
-  id: string
+  id?: string
 }

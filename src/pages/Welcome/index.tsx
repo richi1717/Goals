@@ -1,4 +1,4 @@
-import { Button, Stack } from '@mui/material'
+import { Button, Select, Stack, TextField } from '@mui/material'
 import { useContext } from 'react'
 import GoalDisplay from './components/GoalDisplay'
 import { useGoals } from '../../api/goals/getGoals'
@@ -9,6 +9,7 @@ import logoutUser from '../../api/users/logoutUser'
 import updateUser from '../../api/users/updateUser'
 import useCurrentUser from '../../utils/useCurrentUser'
 import { SettingsContext } from '../../components/SettingsContext'
+import AddGoalFormDialog from './components/AddGoalFormDialog'
 
 export default function Welcome() {
   const user = useCurrentUser()
@@ -86,17 +87,10 @@ export default function Welcome() {
       >
         update
       </Button>
-      {/* <div>
-        goal!:{' '}
-        {goals?.find(
-          (goal) => goal.id === '1f6c9b4c-7ccc-4bcb-a04f-557c0087e92c',
-        )?.completed
-          ? 'coolTrue'
-          : 'failFalse'}
-      </div> */}
       <Stack spacing={2} alignItems="flex-start" data-testid="all">
         {renderByFiltered()}
       </Stack>
+      <AddGoalFormDialog userId={user?.uid} />
     </Stack>
   )
 }
