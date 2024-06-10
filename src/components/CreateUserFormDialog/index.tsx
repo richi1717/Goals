@@ -43,6 +43,7 @@ export default function CreateUserFormDialog({
       confirmPassword: '',
     },
     resolver: yupResolver(schema),
+    mode: 'onTouched',
   })
 
   // const handleClickShowPassword = () => setShowPassword((show) => !show)

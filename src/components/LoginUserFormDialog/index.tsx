@@ -1,10 +1,12 @@
-import * as React from 'react'
 import Stack from '@mui/material/Stack'
-import TextField from '@mui/material/TextField'
 import Dialog from '../Dialog'
 import useLoginUser from '../../api/users/useLogin'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { useTheme } from '@mui/material/styles'
+import { useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+import schema from './schema'
+import ControlledTextField from '../ControlledTextField'
 
 interface LoginUserFormDialogProps {
   open: boolean
@@ -18,46 +20,40 @@ export default function LoginUserFormDialog({
   const { mutate } = useLoginUser()
   const theme = useTheme()
   const fullScreen = useMediaQuery(theme.breakpoints.down('tablet'))
+  const { control, handleSubmit, reset } = useForm({
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+    resolver: yupResolver(schema),
+    mode: 'onTouched',
+  })
+
+  const onSubmit = handleSubmit((values) => {
+    mutate(values)
+    onClose()
+    reset()
+  })
 
   return (
     <Dialog
       fullScreen={fullScreen}
       open={open}
-      onClose={onClose}
-      onSubmit={(event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault()
-        const items = new FormData(event.currentTarget)
-        mutate({
-          email: items.get('email') as string,
-          password: items.get('password') as string,
-        })
+      onClose={() => {
         onClose()
+        reset()
       }}
+      onSubmit={onSubmit}
       buttonText="Login"
       title="Login"
     >
       <Stack spacing={2}>
-        <TextField
-          autoFocus
-          required
-          margin="dense"
-          id="email"
-          name="email"
-          label="Email"
-          type="email"
-          fullWidth
-          variant="outlined"
-        />
-        <TextField
-          autoFocus
-          required
-          margin="dense"
-          id="password"
+        <ControlledTextField name="email" control={control} label="Email" />
+        <ControlledTextField
           name="password"
-          label="Password"
+          control={control}
           type="password"
-          fullWidth
-          variant="outlined"
+          label="Password"
         />
       </Stack>
     </Dialog>
