@@ -17,11 +17,15 @@ function ControlledTextField<T extends FieldValues>({
     <Controller
       name={name}
       control={control}
-      render={({ field: { onChange, value }, fieldState: { error } }) => (
+      render={({
+        field: { onBlur, onChange, value },
+        fieldState: { error },
+      }) => (
         <TextField
           helperText={error?.message ?? null}
           error={!!error}
           onChange={onChange}
+          onBlur={onBlur}
           value={value}
           fullWidth
           label={label}

@@ -7,6 +7,8 @@ import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import schema from './schema'
 import ControlledTextField from '../ControlledTextField'
+import { useState } from 'react'
+import { Typography } from '@mui/material'
 
 interface LoginUserFormDialogProps {
   open: boolean
@@ -17,8 +19,9 @@ export default function LoginUserFormDialog({
   open,
   onClose,
 }: LoginUserFormDialogProps) {
-  const { mutate } = useLoginUser()
+  const { mutate, isPending } = useLoginUser()
   const theme = useTheme()
+  const [hasError, setHasError] = useState(false)
   const fullScreen = useMediaQuery(theme.breakpoints.down('tablet'))
   const { control, handleSubmit, reset } = useForm({
     defaultValues: {
@@ -29,10 +32,18 @@ export default function LoginUserFormDialog({
     mode: 'onTouched',
   })
 
-  const onSubmit = handleSubmit((values) => {
-    mutate(values)
-    onClose()
-    reset()
+  const onSubmit = handleSubmit(async (values) => {
+    setHasError(false)
+
+    await mutate(values, {
+      onSuccess: () => {
+        onClose()
+        reset()
+      },
+      onError: () => {
+        setHasError(true)
+      },
+    })
   })
 
   return (
@@ -43,11 +54,15 @@ export default function LoginUserFormDialog({
         onClose()
         reset()
       }}
+      isPending={isPending}
       onSubmit={onSubmit}
       buttonText="Login"
       title="Login"
     >
       <Stack spacing={2}>
+        {hasError && (
+          <Typography color="error">Incorrect email or password</Typography>
+        )}
         <ControlledTextField name="email" control={control} label="Email" />
         <ControlledTextField
           name="password"

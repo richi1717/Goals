@@ -1,4 +1,4 @@
-import { Button, Stack } from '@mui/material'
+import { Button, Stack, Typography } from '@mui/material'
 import { useContext, useState } from 'react'
 import GoalDisplay from './components/GoalDisplay'
 import useGoals from '../../api/goals/useGoals'
@@ -9,12 +9,23 @@ import useCurrentUser from '../../api/users/useCurrentUser'
 import { SettingsContext } from '../../components/SettingsContext'
 import AddGoalFormDialog from './components/AddGoalFormDialog'
 
+function getIt(goals?: Goal[]) {
+  const recurringGoals: Goal[] = []
+  const singleGoals: Goal[] = []
+  goals?.map((goal) =>
+    goal.recurring ? recurringGoals.push(goal) : singleGoals.push(goal),
+  )
+  return { recurringGoals, singleGoals }
+}
+
 export default function Welcome() {
   const { data: user } = useCurrentUser()
   const { mutate } = useLoginUser()
   const { data: goals } = useGoals(user?.uid)
   const [open, setOpen] = useState(false)
   const { mutate: createUser } = useCreateUser()
+  const { recurringGoals, singleGoals } = getIt(goals)
+  console.log({ recurringGoals, singleGoals })
 
   const { settings } = useContext(SettingsContext)
   const hideComplete = settings?.hideComplete
@@ -25,6 +36,23 @@ export default function Welcome() {
 
     const filteredGoals = goals.filter((goal) =>
       hideComplete ? !goal.completed : true,
+    )
+
+    return (
+      <Stack direction="row" justifyContent="space-between" width={1}>
+        <Stack direction="column" alignItems="flex-start">
+          <Typography>Recurring</Typography>
+          {recurringGoals.map((goal) => (
+            <GoalDisplay key={goal.id} goal={goal} userId={user?.uid} />
+          ))}
+        </Stack>
+        <Stack direction="column" alignItems="flex-start">
+          <Typography>Single</Typography>
+          {singleGoals.map((goal) => (
+            <GoalDisplay key={goal.id} goal={goal} userId={user?.uid} />
+          ))}
+        </Stack>
+      </Stack>
     )
 
     if (filterBy === 'all') {

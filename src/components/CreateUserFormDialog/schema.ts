@@ -4,7 +4,10 @@ const schema = yup
   .object({
     firstName: yup.string().required('First name is required'),
     lastName: yup.string().required('Last name is required'),
-    email: yup.string().email().required('Email is required'),
+    email: yup
+      .string()
+      .email('Enter a valid email')
+      .required('Email is required'),
     password: yup
       .string()
       .required('Password is required')

@@ -19,6 +19,8 @@ import ControlledTextField from '../ControlledTextField'
 import useCreateUser from '../../api/users/useCreateUser'
 import { yupResolver } from '@hookform/resolvers/yup'
 import schema from './schema'
+import { useState } from 'react'
+import { Typography } from '@mui/material'
 
 interface CreateUserFormDialogProps {
   open: boolean
@@ -29,7 +31,8 @@ export default function CreateUserFormDialog({
   open,
   onClose,
 }: CreateUserFormDialogProps) {
-  const { mutate } = useCreateUser()
+  const { mutate, isPending } = useCreateUser()
+  const [hasError, setHasError] = useState(false)
   const theme = useTheme()
   // const [showPassword, setShowPassword] = React.useState(false)
   // const [showConfirmPassword, setShowConfirmPassword] = React.useState(false)
@@ -48,13 +51,25 @@ export default function CreateUserFormDialog({
 
   // const handleClickShowPassword = () => setShowPassword((show) => !show)
 
-  const onSubmit = handleSubmit((values) => {
-    mutate({
-      email: values.email,
-      password: values.password,
-      displayName: `${values.firstName} ${values.lastName}`,
-    })
-    onClose()
+  const onSubmit = handleSubmit(async (values) => {
+    setHasError(false)
+
+    await mutate(
+      {
+        email: values.email,
+        password: values.password,
+        displayName: `${values.firstName} ${values.lastName}`,
+      },
+      {
+        onSuccess: () => {
+          onClose()
+          reset()
+        },
+        onError: () => {
+          setHasError(true)
+        },
+      },
+    )
   })
 
   return (
@@ -68,8 +83,14 @@ export default function CreateUserFormDialog({
       onSubmit={onSubmit}
       buttonText="Create"
       title="Create"
+      isPending={isPending}
     >
       <Stack spacing={2}>
+        {hasError && (
+          <Typography color="error">
+            Something went wrong, please try again later
+          </Typography>
+        )}
         <ControlledTextField
           name="firstName"
           label="First name"

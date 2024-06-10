@@ -6,6 +6,7 @@ import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
 import useMediaQuery from '@mui/material/useMediaQuery'
+import LoadingButton from '@mui/lab/LoadingButton'
 import CloseIcon from '@mui/icons-material/Close'
 import { useTheme } from '@mui/material/styles'
 import { IconButton } from '@mui/material'
@@ -18,6 +19,7 @@ interface DialogProps extends Omit<MuiDialogProps, 'onSubmit'> {
   showCancel?: boolean
   onSubmit?: (event: React.FormEvent<HTMLFormElement>) => void
   onClose: () => void
+  isPending?: boolean
 }
 
 export default function Dialog({
@@ -28,6 +30,7 @@ export default function Dialog({
   buttonText,
   onSubmit,
   onClose,
+  isPending = false,
 }: DialogProps) {
   const theme = useTheme()
   const fullScreen = useMediaQuery(theme.breakpoints.down('tablet'))
@@ -68,9 +71,9 @@ export default function Dialog({
             Cancel
           </Button>
         )}
-        <Button variant="contained" type="submit">
+        <LoadingButton variant="contained" type="submit" loading={isPending}>
           {buttonText}
-        </Button>
+        </LoadingButton>
       </DialogActions>
     </MuiDialog>
   )
