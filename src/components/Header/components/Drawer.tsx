@@ -21,8 +21,8 @@ import ToggleColorMode from '../../ToggleColorMode'
 import { useNavigate } from 'react-router-dom'
 import CloseIcon from '@mui/icons-material/Close'
 import { useContext } from 'react'
-import logoutUser from '../../../api/users/logoutUser'
-import { Settings, SettingsContext } from '../../SettingsContext'
+import useLogout from '../../../api/users/useLogout'
+import { SettingsContext } from '../../SettingsContext'
 
 interface DrawerProps {
   anchorEl: null | HTMLElement
@@ -37,15 +37,13 @@ export default function Drawer({
 }: DrawerProps) {
   const isAdminOpen = Boolean(anchorEl)
   const navigate = useNavigate()
-  // const [filterBy, setFilterBy] = useState<Filter>('all')
+  const { mutate } = useLogout()
   const { settings, dispatch } = useContext(SettingsContext)
 
   const filterBy = settings?.filterBy
   const hideComplete = settings?.hideComplete
-  // const [hideComplete, setHideComplete] = useState(false)
 
   const handleChange = (event: SelectChangeEvent) => {
-    // setFilterBy(event.target.value as Filter)
     dispatch({
       type: 'updateFilterBy',
       filterBy: event.target.value as Settings['filterBy'],
@@ -123,7 +121,7 @@ export default function Drawer({
             <ListItem>
               <ListItemButton
                 onClick={() => {
-                  logoutUser()
+                  mutate()
                   handleClose()
                   navigate('/')
                 }}

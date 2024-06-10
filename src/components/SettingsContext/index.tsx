@@ -1,5 +1,4 @@
 import React, { createContext, useReducer } from 'react'
-import { Frequency } from '../../pages/Welcome/components/GoalDisplay'
 
 const initialSettings = {
   hideComplete: false,
@@ -24,11 +23,6 @@ export function SettingsProvider({ children }: { children?: React.ReactNode }) {
       {children}
     </SettingsContext.Provider>
   )
-}
-
-export interface Settings {
-  filterBy?: 'all' | Frequency
-  hideComplete?: boolean
 }
 
 interface Action extends Settings {

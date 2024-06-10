@@ -31,7 +31,9 @@ export default function useUpdateGoal(userId?: string) {
       queryClient.setQueryData(
         ['goals', 'list', { userId }],
         (previousGoals) =>
-          previousGoals ? { ...previousGoals, [id]: goal } : previousGoals,
+          previousGoals
+            ? { ...previousGoals, [id as string]: goal }
+            : previousGoals,
       )
 
       return () => {

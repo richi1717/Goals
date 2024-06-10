@@ -20,7 +20,7 @@ async function fetchGoals(userId?: string) {
   }
 }
 
-export function useGoals(userId?: string) {
+function useGoals(userId?: string) {
   const queryClient = useQueryClient()
 
   return useQuery({
@@ -37,3 +37,5 @@ export function useGoals(userId?: string) {
     enabled: !!userId,
   })
 }
+
+export default useGoals

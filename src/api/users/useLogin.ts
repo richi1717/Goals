@@ -25,19 +25,7 @@ export const loginUser = async (email: string, password: string) => {
   }
 }
 
-export default loginUser
-
-// async function useLoginUser(email: string, password: string) {
-//   return remove(ref(db, `users/${userId}/goals/${goalId}`))
-//     .then(() => Promise.resolve(true))
-//     .catch((error: unknown) => {
-//       console.error(error)
-
-//       return Promise.reject('🤦')
-//     })
-// }
-
-export function useLoginUser() {
+function useLoginUser() {
   const queryClient = useQueryClient()
 
   return useMutation({
@@ -45,6 +33,10 @@ export function useLoginUser() {
       loginUser(email, password),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ['user'] })
+      await queryClient.invalidateQueries({ queryKey: ['goals', 'list'] })
+      await queryClient.invalidateQueries({ queryKey: ['settings'] })
     },
   })
 }
+
+export default useLoginUser

@@ -3,8 +3,8 @@ import { ToggleButton, ToggleButtonGroup } from '@mui/material'
 import SettingsBrightnessIcon from '@mui/icons-material/SettingsBrightness'
 import LightModeIcon from '@mui/icons-material/LightMode'
 import DarkModeIcon from '@mui/icons-material/DarkMode'
-
-export type Mode = 'dark' | 'light' | 'system'
+import useCurrentUser from '../../api/users/useCurrentUser'
+import useUpdateSettings from '../../api/settings/useUpdateSettings'
 
 type ColorModeContextProps = {
   mode: Mode
@@ -17,12 +17,20 @@ export const ColorModeContext = React.createContext<ColorModeContextProps>(
 
 function ToggleColorMode() {
   const { mode, setColorMode } = React.useContext(ColorModeContext)
+  const { data: user } = useCurrentUser()
+  const { mutate } = useUpdateSettings(user?.uid)
 
   const handleChange = (
     _: React.MouseEvent<HTMLElement>,
     newMode: 'light' | 'dark' | 'system',
   ) => {
-    newMode && setColorMode(newMode)
+    if (newMode) {
+      if (user) {
+        mutate({ mode: newMode })
+      }
+
+      setColorMode(newMode)
+    }
   }
 
   return (

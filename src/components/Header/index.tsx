@@ -1,24 +1,20 @@
 import {
   AppBar,
   Avatar,
+  Box,
   Button,
   Container,
   IconButton,
   Stack,
   Toolbar,
 } from '@mui/material'
-// import { deepPurple } from '@mui/material/colors'
-// import Avatar from '@mui/material/Avatar'
-// import { useTheme } from '@mui/material/styles'
-// import useMediaQuery from '@mui/material/useMediaQuery'
+import React from 'react'
 import Drawer from './components/Drawer'
 import { useState } from 'react'
 import { deepPurple } from '@mui/material/colors'
-import useCurrentUser from '../../utils/useCurrentUser'
+import useCurrentUser from '../../api/users/useCurrentUser'
 import LoginUserFormDialog from '../LoginUserFormDialog'
-
-// interface HeaderProps {
-// }
+import { ColorModeContext } from '../ToggleColorMode'
 
 const getName = (name: string) => {
   const rgx = new RegExp(/(\p{L}{1})\p{L}+/, 'gu')
@@ -35,6 +31,7 @@ export default function Header() {
   const displayName = user?.displayName ?? ''
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [loginOpen, setLoginOpen] = useState(false)
+  const { mode } = React.useContext(ColorModeContext)
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
@@ -53,26 +50,33 @@ export default function Header() {
             <Stack direction="row" alignItems="center" sx={{ flexGrow: 1 }} />
             <Stack direction="row" flexGrow={0} alignItems="center">
               {status === 'error' && (
-                <Button onClick={() => setLoginOpen(true)}>Login</Button>
-              )}
-              <IconButton
-                sx={{
-                  textTransform: 'none',
-                  p: 2,
-                  color: 'common.white',
-                }}
-                onClick={handleClick}
-              >
-                <Avatar
-                  sx={{
-                    bgcolor: deepPurple[500],
-                    width: { mobile: 30, tablet: 40 },
-                    height: { mobile: 30, tablet: 40 },
-                  }}
+                <Button
+                  color={mode === 'light' ? 'inherit' : 'primary'}
+                  onClick={() => setLoginOpen(true)}
                 >
-                  {getName(displayName)}
-                </Avatar>
-              </IconButton>
+                  Login
+                </Button>
+              )}
+              <Box sx={{ p: 2 }}>
+                <IconButton
+                  sx={{
+                    textTransform: 'none',
+                    p: 0,
+                    color: 'common.white',
+                  }}
+                  onClick={handleClick}
+                >
+                  <Avatar
+                    sx={{
+                      bgcolor: deepPurple[500],
+                      width: { mobile: 30, tablet: 40 },
+                      height: { mobile: 30, tablet: 40 },
+                    }}
+                  >
+                    {getName(displayName)}
+                  </Avatar>
+                </IconButton>
+              </Box>
               <Drawer
                 anchorEl={anchorEl}
                 setAnchorEl={() => setAnchorEl(null)}
@@ -82,7 +86,10 @@ export default function Header() {
           </Toolbar>
         </Container>
       </AppBar>
-      <LoginUserFormDialog open={loginOpen} setOpen={setLoginOpen} />
+      <LoginUserFormDialog
+        open={loginOpen}
+        onClose={() => setLoginOpen(false)}
+      />
     </Stack>
   )
 }

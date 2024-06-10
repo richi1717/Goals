@@ -1,4 +1,5 @@
 type Frequency = 'daily' | 'weekly' | 'monthly' | 'yearly' | ''
+type Mode = 'dark' | 'light' | 'system'
 
 interface Goal {
   title: string
@@ -7,4 +8,10 @@ interface Goal {
   recurring: boolean
   frequency: Frequency
   id?: string
+}
+
+interface Settings {
+  filterBy?: 'all' | Frequency
+  hideComplete?: boolean
+  mode?: Mode
 }

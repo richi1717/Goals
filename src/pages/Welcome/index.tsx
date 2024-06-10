@@ -1,24 +1,20 @@
 import { Button, Stack } from '@mui/material'
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import GoalDisplay from './components/GoalDisplay'
-import { useGoals } from '../../api/goals/getGoals'
+import useGoals from '../../api/goals/useGoals'
 import { createUser } from '../../api/users/createUser'
-import { useLoginUser } from '../../api/users/loginUser'
-import { getAuth } from 'firebase/auth'
-import logoutUser from '../../api/users/logoutUser'
+import useLoginUser from '../../api/users/useLogin'
 import updateUser from '../../api/users/updateUser'
-import useCurrentUser from '../../utils/useCurrentUser'
+import useCurrentUser from '../../api/users/useCurrentUser'
 import { SettingsContext } from '../../components/SettingsContext'
 import AddGoalFormDialog from './components/AddGoalFormDialog'
 
 export default function Welcome() {
   const { data: user } = useCurrentUser()
   const { mutate } = useLoginUser()
-  // console.log(status)
   const { data: goals } = useGoals(user?.uid)
-  // console.log(status)
+  const [open, setOpen] = useState(false)
 
-  // const [newGoal, setNewGoal] = useState('')
   const { settings } = useContext(SettingsContext)
   const hideComplete = settings?.hideComplete
   const filterBy = settings?.filterBy
@@ -70,21 +66,6 @@ export default function Welcome() {
       </Button>
       <Button
         onClick={() => {
-          const { currentUser } = getAuth()
-          console.log(currentUser)
-        }}
-      >
-        get auth
-      </Button>
-      <Button
-        onClick={() => {
-          logoutUser()
-        }}
-      >
-        logout
-      </Button>
-      <Button
-        onClick={() => {
           updateUser('Greatest Ever')
         }}
       >
@@ -93,7 +74,12 @@ export default function Welcome() {
       <Stack spacing={2} alignItems="flex-start" data-testid="all">
         {renderByFiltered()}
       </Stack>
-      <AddGoalFormDialog userId={user?.uid} />
+      <Button onClick={() => setOpen(true)}>Add new</Button>
+      <AddGoalFormDialog
+        userId={user?.uid}
+        open={open}
+        onClose={() => setOpen(false)}
+      />
     </Stack>
   )
 }
