@@ -19,31 +19,39 @@ interface AddGoalFormDialogProps {
   onClose: () => void
 }
 
+const initialGoal: Goal = {
+  recurring: false,
+  completed: false,
+  frequency: '',
+  level: 'A',
+  title: '',
+}
+
 export default function AddGoalFormDialog({
   userId,
   open,
   onClose,
 }: AddGoalFormDialogProps) {
-  const [newGoal, setNewGoal] = React.useState<Goal>({
-    recurring: false,
-    completed: false,
-    frequency: '',
-    level: 'A',
-    title: '',
-  })
+  const [newGoal, setNewGoal] = React.useState<Goal>(initialGoal)
   const { mutate } = useAddGoal(userId)
 
   return (
     <Dialog
       title="Add Goal"
       open={open}
-      onClose={onClose}
+      onClose={() => {
+        onClose()
+        setNewGoal(initialGoal)
+      }}
       onSubmit={(event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
-        mutate({
-          ...newGoal,
-          frequency: newGoal.recurring ? '' : newGoal.frequency,
-        })
+        mutate(
+          {
+            ...newGoal,
+            frequency: newGoal.recurring ? '' : newGoal.frequency,
+          },
+          { onSuccess: () => setNewGoal(initialGoal) },
+        )
         onClose()
       }}
       buttonText="Add"
