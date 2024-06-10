@@ -4,6 +4,7 @@ import {
   Box,
   Button,
   Container,
+  Divider,
   IconButton,
   Stack,
   Toolbar,
@@ -15,6 +16,7 @@ import { deepPurple } from '@mui/material/colors'
 import useCurrentUser from '../../api/users/useCurrentUser'
 import LoginUserFormDialog from '../LoginUserFormDialog'
 import { ColorModeContext } from '../ToggleColorMode'
+import CreateUserFormDialog from '../CreateUserFormDialog'
 
 const getName = (name: string) => {
   const rgx = new RegExp(/(\p{L}{1})\p{L}+/, 'gu')
@@ -31,6 +33,7 @@ export default function Header() {
   const displayName = user?.displayName ?? ''
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [loginOpen, setLoginOpen] = useState(false)
+  const [createOpen, setCreateOpen] = useState(false)
   const { mode } = React.useContext(ColorModeContext)
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -50,12 +53,23 @@ export default function Header() {
             <Stack direction="row" alignItems="center" sx={{ flexGrow: 1 }} />
             <Stack direction="row" flexGrow={0} alignItems="center">
               {status === 'error' && (
-                <Button
-                  color={mode === 'light' ? 'inherit' : 'primary'}
-                  onClick={() => setLoginOpen(true)}
-                >
-                  Login
-                </Button>
+                <Stack direction="row">
+                  <Button
+                    color={mode === 'light' ? 'inherit' : 'primary'}
+                    onClick={() => setLoginOpen(true)}
+                    sx={{ textTransform: 'none' }}
+                  >
+                    Login
+                  </Button>
+                  <Divider orientation="vertical" flexItem />
+                  <Button
+                    color={mode === 'light' ? 'inherit' : 'primary'}
+                    onClick={() => setCreateOpen(true)}
+                    sx={{ textTransform: 'none' }}
+                  >
+                    Create
+                  </Button>
+                </Stack>
               )}
               <Box sx={{ p: 2 }}>
                 <IconButton
@@ -89,6 +103,10 @@ export default function Header() {
       <LoginUserFormDialog
         open={loginOpen}
         onClose={() => setLoginOpen(false)}
+      />
+      <CreateUserFormDialog
+        open={createOpen}
+        onClose={() => setCreateOpen(false)}
       />
     </Stack>
   )

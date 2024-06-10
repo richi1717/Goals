@@ -6,7 +6,7 @@ initialize()
 
 const auth = getAuth()
 
-export const loginUser = async (email: string, password: string) => {
+export const loginUser = async ({ email, password }: UserLogin) => {
   try {
     const userCredential = await signInWithEmailAndPassword(
       auth,
@@ -29,8 +29,8 @@ function useLoginUser() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: ({ email, password }: { email: string; password: string }) =>
-      loginUser(email, password),
+    mutationFn: ({ email, password }: UserLogin) =>
+      loginUser({ email, password }),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ['user'] })
       await queryClient.invalidateQueries({ queryKey: ['goals', 'list'] })

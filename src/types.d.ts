@@ -15,3 +15,8 @@ interface Settings {
   hideComplete?: boolean
   mode?: Mode
 }
+
+interface UserLogin {
+  email: string
+  password: string
+}

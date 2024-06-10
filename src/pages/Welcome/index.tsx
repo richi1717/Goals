@@ -2,7 +2,7 @@ import { Button, Stack } from '@mui/material'
 import { useContext, useState } from 'react'
 import GoalDisplay from './components/GoalDisplay'
 import useGoals from '../../api/goals/useGoals'
-import { createUser } from '../../api/users/createUser'
+import useCreateUser from '../../api/users/useCreateUser'
 import useLoginUser from '../../api/users/useLogin'
 import updateUser from '../../api/users/updateUser'
 import useCurrentUser from '../../api/users/useCurrentUser'
@@ -14,6 +14,7 @@ export default function Welcome() {
   const { mutate } = useLoginUser()
   const { data: goals } = useGoals(user?.uid)
   const [open, setOpen] = useState(false)
+  const { mutate: createUser } = useCreateUser()
 
   const { settings } = useContext(SettingsContext)
   const hideComplete = settings?.hideComplete
@@ -52,7 +53,11 @@ export default function Welcome() {
     >
       <Button
         onClick={() => {
-          createUser('kikki_sawn@yahoo.com', 'Password1717!')
+          createUser({
+            email: 'richi1717@gmail.com',
+            password: 'Password1717!',
+            displayName: 'Deku',
+          })
         }}
       >
         create
@@ -66,7 +71,7 @@ export default function Welcome() {
       </Button>
       <Button
         onClick={() => {
-          updateUser('Greatest Ever')
+          updateUser('Eraser head')
         }}
       >
         update
