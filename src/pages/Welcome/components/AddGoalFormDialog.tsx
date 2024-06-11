@@ -12,11 +12,13 @@ import {
   SelectChangeEvent,
   Stack,
 } from '@mui/material'
+import useUpdateGoal from '../../../api/goals/useUpdateGoal'
 
 interface AddGoalFormDialogProps {
   userId?: string
   open: boolean
   onClose: () => void
+  existingGoal?: Goal
 }
 
 const initialGoal: Goal = {
@@ -31,13 +33,21 @@ export default function AddGoalFormDialog({
   userId,
   open,
   onClose,
+  existingGoal,
 }: AddGoalFormDialogProps) {
   const [newGoal, setNewGoal] = React.useState<Goal>(initialGoal)
-  const { mutate } = useAddGoal(userId)
+  const { mutate: mutateAdd } = useAddGoal(userId)
+  const { mutate: mutateUpdate } = useUpdateGoal(userId)
+
+  React.useEffect(() => {
+    if (existingGoal) {
+      setNewGoal(existingGoal)
+    }
+  }, [existingGoal])
 
   return (
     <Dialog
-      title="Add Goal"
+      title={existingGoal ? 'Edit goal' : 'Add goal'}
       open={open}
       onClose={() => {
         onClose()
@@ -45,6 +55,7 @@ export default function AddGoalFormDialog({
       }}
       onSubmit={(event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
+        const mutate = existingGoal ? mutateUpdate : mutateAdd
         mutate(
           {
             ...newGoal,
@@ -54,7 +65,7 @@ export default function AddGoalFormDialog({
         )
         onClose()
       }}
-      buttonText="Add"
+      buttonText={existingGoal ? 'Edit' : 'Add'}
     >
       <Stack spacing={2} sx={{ pt: 2 }}>
         <TextField

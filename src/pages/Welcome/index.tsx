@@ -1,5 +1,5 @@
 import { Button, Stack, Typography } from '@mui/material'
-import { useContext, useState } from 'react'
+import { useContext, useMemo, useState } from 'react'
 import GoalDisplay from './components/GoalDisplay'
 import useGoals from '../../api/goals/useGoals'
 import useCreateUser from '../../api/users/useCreateUser'
@@ -24,20 +24,24 @@ export default function Welcome() {
   const { mutate } = useLoginUser()
   const { data: goals } = useGoals(user?.uid)
   const [open, setOpen] = useState(false)
+  const [editOpen, setEditOpen] = useState(false)
   const { mutate: createUser } = useCreateUser()
-  const { recurringGoals, singleGoals } = separateByRecurring(goals)
-  // console.log({ recurringGoals, singleGoals })
-
   const { settings } = useContext(SettingsContext)
   const hideComplete = settings?.hideComplete
   const filterBy = settings?.filterBy
 
+  const filteredGoals = useMemo(
+    () => goals?.filter((goal) => (hideComplete ? !goal.completed : true)),
+    [goals, hideComplete],
+  )
+
+  const { recurringGoals, singleGoals } = useMemo(
+    () => separateByRecurring(filteredGoals),
+    [filteredGoals],
+  )
+
   const renderByFiltered = () => {
     if (!goals) return null
-
-    const filteredGoals = goals.filter((goal) =>
-      hideComplete ? !goal.completed : true,
-    )
 
     if (filterBy === 'all') {
       return (
@@ -45,13 +49,23 @@ export default function Welcome() {
           <Stack direction="column" alignItems="flex-start">
             <Typography>Recurring</Typography>
             {recurringGoals.sort(sortFrequency).map((goal) => (
-              <GoalDisplay key={goal.id} goal={goal} userId={user?.uid} />
+              <GoalDisplay
+                isEdit={editOpen}
+                key={goal.id}
+                goal={goal}
+                userId={user?.uid}
+              />
             ))}
           </Stack>
           <Stack direction="column" alignItems="flex-start">
             <Typography>Single</Typography>
             {singleGoals.map((goal) => (
-              <GoalDisplay key={goal.id} goal={goal} userId={user?.uid} />
+              <GoalDisplay
+                isEdit={editOpen}
+                key={goal.id}
+                goal={goal}
+                userId={user?.uid}
+              />
             ))}
           </Stack>
         </Stack>
@@ -66,13 +80,23 @@ export default function Welcome() {
             .filter((goal) => goal.frequency === filterBy)
             .sort(sortFrequency)
             .map((goal) => (
-              <GoalDisplay key={goal.id} goal={goal} userId={user?.uid} />
+              <GoalDisplay
+                isEdit={editOpen}
+                key={goal.id}
+                goal={goal}
+                userId={user?.uid}
+              />
             ))}
         </Stack>
         <Stack direction="column" alignItems="flex-start">
           <Typography>Single</Typography>
           {singleGoals.map((goal) => (
-            <GoalDisplay key={goal.id} goal={goal} userId={user?.uid} />
+            <GoalDisplay
+              isEdit={editOpen}
+              key={goal.id}
+              goal={goal}
+              userId={user?.uid}
+            />
           ))}
         </Stack>
       </Stack>
@@ -92,6 +116,9 @@ export default function Welcome() {
       data-testid="welcomePage"
     >
       <Button onClick={() => setOpen(true)}>Add new</Button>
+      <Button onClick={() => setEditOpen(!editOpen)}>
+        {editOpen ? 'Finish editing' : 'Edit'} goals
+      </Button>
       <Button
         onClick={() => {
           createUser({

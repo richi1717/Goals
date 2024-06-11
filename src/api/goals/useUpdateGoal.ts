@@ -7,7 +7,7 @@ async function updateGoal(goal: Goal, userId?: string) {
 
   return update(ref(db, `users/${userId}/goals/${id}`), {
     ...newGoal,
-    lastUpdate: serverTimestamp(),
+    lastUpdated: serverTimestamp(),
   })
     .then(() => Promise.resolve(true))
     .catch((error: unknown) => {
