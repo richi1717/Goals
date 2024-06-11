@@ -1,43 +1,150 @@
 {
   "users": {
+    "H7i62vwsutVTypO3phbXWs0elpx2": {
+      "displayName": "Eraser head",
+      "email": "richi1717@gmail.com"
+    },
     "hjYwW6b7xqcAiLYJSgFEUr4K78H3": {
       "displayName": "Greatest Ever",
       "email": "kikki_sawn@yahoo.com",
-      "settings": {
-        "filterBy": "all",
-        "hideComplete": false,
-        "mode": "system"
-      },
       "goals": {
-        "020f2d1d-7ab5-4d8f-b3b8-ea90fc115a8a": {
-          "category": "long",
+        "-NzvSXz756E77sGeEFeo": {
           "completed": false,
           "frequency": "weekly",
-          "lastUpdate": 1717556120204,
-          "level": 2,
-          "title": "create a goal app"
+          "lastUpdate": 1718080296410,
+          "created": 1718080388926,
+          "level": "B",
+          "recurring": true,
+          "title": "UA high"
+        },
+        "-NzvWKKtDDmQoeR13McV": {
+          "completed": true,
+          "created": 1718080388926,
+          "frequency": "monthly",
+          "lastUpdate": 1718080298208,
+          "level": "A",
+          "recurring": true,
+          "title": "Bakugo"
+        },
+        "-Nzy2CKlJzPrVfa2PJ76": {
+          "created": 1718080388926,
+          "completed": true,
+          "frequency": "yearly",
+          "lastUpdate": 1718080300784,
+          "level": "B",
+          "recurring": true,
+          "title": "Midorya"
+        },
+        "-O-4TubUhVO8CtDki6oU": {
+          "completed": false,
+          "created": 1718080388926,
+          "frequency": "monthly",
+          "lastUpdate": 1718080299536,
+          "level": "A",
+          "recurring": true,
+          "title": "Shinso"
+        },
+        "-O-4UHldWNNdxPedNe4E": {
+          "completed": false,
+          "created": 1718080388926,
+          "frequency": "",
+          "lastUpdate": 1718080303359,
+          "level": "A",
+          "recurring": false,
+          "title": "all might"
+        },
+        "-O-4UJHE6wLXAebugL7B": {
+          "completed": false,
+          "created": 1718080388926,
+          "frequency": "",
+          "lastUpdate": 1718080304533,
+          "level": "A",
+          "recurring": false,
+          "title": "b might"
+        },
+        "-O-4UKWCjpRRUH4yVOZ-": {
+          "completed": true,
+          "frequency": "",
+          "created": 1718080388926,
+          "lastUpdate": 1718080305519,
+          "level": "A",
+          "recurring": false,
+          "title": "a might"
+        },
+        "-O-4ULuL9-ICxM-QmkiI": {
+          "completed": false,
+          "created": 1718080388926,
+          "frequency": "",
+          "lastUpdate": 1718080306304,
+          "level": "A",
+          "recurring": false,
+          "title": "one for all"
+        },
+        "-O-4UP1NSmj8xkDB3wV3": {
+          "completed": false,
+          "created": 1718080388926,
+          "frequency": "yearly",
+          "lastUpdate": 1718080302074,
+          "level": "A",
+          "recurring": true,
+          "title": "all for one"
+        },
+        "-O-4XKxg8I2mcD3E_BrX": {
+          "created": 1718080388926,
+          "completed": false,
+          "frequency": "",
+          "lastUpdate": 1718080307029,
+          "level": "A",
+          "recurring": false,
+          "title": "Midorya"
+        },
+        "-O-4XRpnquIiPm8kU7GR": {
+          "completed": false,
+          "frequency": "daily",
+          "created": 1718080388926,
+          "lastUpdate": 1718080278419,
+          "level": "A",
+          "recurring": true,
+          "title": "ochaca"
+        },
+        "-O-4ZYw7p8yxL_S2A1AH": {
+          "completed": false,
+          "created": 1718080388926,
+          "frequency": "daily",
+          "level": "A",
+          "recurring": true,
+          "title": "dark shadow"
         },
         "1f6c9b4c-7ccc-4bcb-a04f-557c0087e92c": {
-          "category": "long",
+          "created": 1718080388926,
           "completed": true,
-          "frequency": "monthly",
-          "level": 3,
+          "frequency": "daily",
+          "lastUpdate": 1718080293413,
+          "level": "A",
+          "recurring": true,
           "title": "start business"
         },
         "1f6c9b4c-7ccc-4bcb-a04f-557c0087e92d": {
-          "category": "short",
           "completed": false,
-          "frequency": "yearly",
-          "level": 4,
+          "frequency": "",
+          "lastUpdate": 1718080307728,
+          "level": "B",
+          "created": 1718080388926,
+          "recurring": false,
           "title": "lol"
         },
         "3e5779c4-7054-4c65-bc5f-18729e55089f": {
-          "category": "short",
+          "created": 1718080388926,
           "completed": true,
           "frequency": "daily",
-          "level": 1,
+          "lastUpdate": 1718080294917,
+          "level": "C",
+          "recurring": true,
           "title": "wtf"
         }
+      },
+      "settings": {
+        "mode": "light"
       }
     }
   }

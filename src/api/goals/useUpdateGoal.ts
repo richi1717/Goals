@@ -1,4 +1,4 @@
-import { getDatabase, ref, update } from 'firebase/database'
+import { getDatabase, ref, update, serverTimestamp } from 'firebase/database'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 const db = getDatabase()
 
@@ -7,6 +7,7 @@ async function updateGoal(goal: Goal, userId?: string) {
 
   return update(ref(db, `users/${userId}/goals/${id}`), {
     ...newGoal,
+    lastUpdate: serverTimestamp(),
   })
     .then(() => Promise.resolve(true))
     .catch((error: unknown) => {

@@ -48,7 +48,7 @@ export default function AddGoalFormDialog({
         mutate(
           {
             ...newGoal,
-            frequency: newGoal.recurring ? '' : newGoal.frequency,
+            frequency: newGoal.recurring ? newGoal.frequency : '',
           },
           { onSuccess: () => setNewGoal(initialGoal) },
         )

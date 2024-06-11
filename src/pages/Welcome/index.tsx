@@ -8,8 +8,9 @@ import updateUser from '../../api/users/updateUser'
 import useCurrentUser from '../../api/users/useCurrentUser'
 import { SettingsContext } from '../../components/SettingsContext'
 import AddGoalFormDialog from './components/AddGoalFormDialog'
+import { sortFrequency } from './utils'
 
-function getIt(goals?: Goal[]) {
+function separateByRecurring(goals?: Goal[]) {
   const recurringGoals: Goal[] = []
   const singleGoals: Goal[] = []
   goals?.map((goal) =>
@@ -24,8 +25,8 @@ export default function Welcome() {
   const { data: goals } = useGoals(user?.uid)
   const [open, setOpen] = useState(false)
   const { mutate: createUser } = useCreateUser()
-  const { recurringGoals, singleGoals } = getIt(goals)
-  console.log({ recurringGoals, singleGoals })
+  const { recurringGoals, singleGoals } = separateByRecurring(goals)
+  // console.log({ recurringGoals, singleGoals })
 
   const { settings } = useContext(SettingsContext)
   const hideComplete = settings?.hideComplete
@@ -42,7 +43,7 @@ export default function Welcome() {
       <Stack direction="row" justifyContent="space-between" width={1}>
         <Stack direction="column" alignItems="flex-start">
           <Typography>Recurring</Typography>
-          {recurringGoals.map((goal) => (
+          {recurringGoals.sort(sortFrequency).map((goal) => (
             <GoalDisplay key={goal.id} goal={goal} userId={user?.uid} />
           ))}
         </Stack>
@@ -79,6 +80,7 @@ export default function Welcome() {
       spacing={1}
       data-testid="welcomePage"
     >
+      <Button onClick={() => setOpen(true)}>Add new</Button>
       <Button
         onClick={() => {
           createUser({
@@ -107,7 +109,6 @@ export default function Welcome() {
       <Stack spacing={2} alignItems="flex-start" data-testid="all">
         {renderByFiltered()}
       </Stack>
-      <Button onClick={() => setOpen(true)}>Add new</Button>
       <AddGoalFormDialog
         userId={user?.uid}
         open={open}
