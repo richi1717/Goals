@@ -8,6 +8,8 @@ interface Goal {
   recurring: boolean
   frequency: Frequency
   id?: string
+  lastUpdate?: number
+  created?: number
 }
 
 interface Settings {

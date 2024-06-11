@@ -39,13 +39,35 @@ export default function Welcome() {
       hideComplete ? !goal.completed : true,
     )
 
+    if (filterBy === 'all') {
+      return (
+        <Stack direction="row" justifyContent="space-between" width={1}>
+          <Stack direction="column" alignItems="flex-start">
+            <Typography>Recurring</Typography>
+            {recurringGoals.sort(sortFrequency).map((goal) => (
+              <GoalDisplay key={goal.id} goal={goal} userId={user?.uid} />
+            ))}
+          </Stack>
+          <Stack direction="column" alignItems="flex-start">
+            <Typography>Single</Typography>
+            {singleGoals.map((goal) => (
+              <GoalDisplay key={goal.id} goal={goal} userId={user?.uid} />
+            ))}
+          </Stack>
+        </Stack>
+      )
+    }
+
     return (
       <Stack direction="row" justifyContent="space-between" width={1}>
         <Stack direction="column" alignItems="flex-start">
           <Typography>Recurring</Typography>
-          {recurringGoals.sort(sortFrequency).map((goal) => (
-            <GoalDisplay key={goal.id} goal={goal} userId={user?.uid} />
-          ))}
+          {recurringGoals
+            .filter((goal) => goal.frequency === filterBy)
+            .sort(sortFrequency)
+            .map((goal) => (
+              <GoalDisplay key={goal.id} goal={goal} userId={user?.uid} />
+            ))}
         </Stack>
         <Stack direction="column" alignItems="flex-start">
           <Typography>Single</Typography>
@@ -55,17 +77,6 @@ export default function Welcome() {
         </Stack>
       </Stack>
     )
-
-    if (filterBy === 'all') {
-      return filteredGoals.map((goal) => (
-        <GoalDisplay key={goal.id} goal={goal} userId={user?.uid} />
-      ))
-    }
-    return filteredGoals
-      .filter((goal) => goal.frequency === filterBy)
-      .map((goal) => (
-        <GoalDisplay key={goal.id} goal={goal} userId={user?.uid} />
-      ))
   }
 
   return (
