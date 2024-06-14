@@ -10,6 +10,7 @@ import useUpdateGoal from '../../../api/goals/useUpdateGoal'
 import { grey } from '@mui/material/colors'
 import { useState } from 'react'
 import AddGoalFormDialog from './AddGoalFormDialog'
+import FinancialGoal from './FinancialGoal'
 
 interface GoalDisplayProps {
   goal: Goal
@@ -40,6 +41,14 @@ export default function GoalDisplay({
     if (goal.frequency === 'yearly') return 'Y'
   }
 
+  if (goal.financial && goal.currentAmount && goal.finalAmount) {
+    return <FinancialGoal goal={goal} isEdit={isEdit} userId={userId} />
+  }
+
+  function truncateString(str: string) {
+    return str.length > 25 ? `${str.slice(0, 22)}...` : str
+  }
+
   if (isEdit) {
     return (
       <Stack alignItems="center" spacing={2} data-testid="goalDisplay">
@@ -49,7 +58,7 @@ export default function GoalDisplay({
           alignItems="center"
         >
           <FormControlLabel
-            label={goal.title}
+            label={truncateString(goal.title)}
             sx={{
               '&:hover': {
                 '& .MuiSvgIcon-root': {
@@ -79,7 +88,7 @@ export default function GoalDisplay({
       <Stack justifyContent="space-between" direction="row" alignItems="center">
         <Typography>{letters()}</Typography>
         <FormControlLabel
-          value={goal.title}
+          value={truncateString(goal.title)}
           control={
             <Checkbox
               checked={goal.completed}
@@ -87,7 +96,7 @@ export default function GoalDisplay({
               inputProps={{ 'aria-label': 'goal-completion-toggle' }}
             />
           }
-          label={goal.title}
+          label={truncateString(goal.title)}
         />
       </Stack>
     </Stack>

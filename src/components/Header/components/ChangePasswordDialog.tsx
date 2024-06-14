@@ -1,32 +1,32 @@
 import Stack from '@mui/material/Stack'
-import Dialog from '../Dialog'
-import useLoginUser from '../../api/users/useLoginUser'
+import Dialog from '../../Dialog'
+import useUpdatePassword from '../../../api/users/useUpdatePassword'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { useTheme } from '@mui/material/styles'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import schema from './schema'
-import ControlledTextField from '../ControlledTextField'
+import ControlledTextField from '../../ControlledTextField'
 import { useState } from 'react'
 import { Typography } from '@mui/material'
 
-interface LoginUserFormDialogProps {
+interface ChangePasswordDialogProps {
   open: boolean
   onClose: () => void
 }
 
-export default function LoginUserFormDialog({
+export default function ChangePasswordDialog({
   open,
   onClose,
-}: LoginUserFormDialogProps) {
-  const { mutate, isPending } = useLoginUser()
+}: ChangePasswordDialogProps) {
+  const { mutate, isPending } = useUpdatePassword()
   const theme = useTheme()
   const [hasError, setHasError] = useState(false)
   const fullScreen = useMediaQuery(theme.breakpoints.down('tablet'))
   const { control, handleSubmit, reset } = useForm({
     defaultValues: {
-      email: '',
       password: '',
+      confirmPassword: '',
     },
     resolver: yupResolver(schema),
     mode: 'onTouched',
@@ -35,15 +35,18 @@ export default function LoginUserFormDialog({
   const onSubmit = handleSubmit(async (values) => {
     setHasError(false)
 
-    await mutate(values, {
-      onSuccess: () => {
-        onClose()
-        reset()
+    await mutate(
+      { newPassword: values.password },
+      {
+        onSuccess: () => {
+          onClose()
+          reset()
+        },
+        onError: () => {
+          setHasError(true)
+        },
       },
-      onError: () => {
-        setHasError(true)
-      },
-    })
+    )
   })
 
   return (
@@ -63,12 +66,17 @@ export default function LoginUserFormDialog({
         {hasError && (
           <Typography color="error">Incorrect email or password</Typography>
         )}
-        <ControlledTextField name="email" control={control} label="Email" />
         <ControlledTextField
           name="password"
           control={control}
           type="password"
           label="Password"
+        />
+        <ControlledTextField
+          name="confirmPassword"
+          control={control}
+          type="password"
+          label="Confirm password"
         />
       </Stack>
     </Dialog>

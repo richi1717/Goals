@@ -10,6 +10,9 @@ interface Goal {
   id?: string
   lastUpdated?: number
   created?: number
+  financial?: boolean
+  finalAmount?: number
+  currentAmount?: number
 }
 
 interface Settings {

@@ -1,4 +1,4 @@
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
+import { getAuth, sendPasswordResetEmail, updatePassword } from 'firebase/auth'
 import initialize from '../initialize'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
@@ -6,33 +6,33 @@ initialize()
 
 const auth = getAuth()
 
-export const loginUser = async ({ email, password }: UserLogin) => {
+interface ChangePasswordProps {
+  newPassword: string
+}
+
+export const changePassword = async ({ newPassword }: ChangePasswordProps) => {
   try {
-    const userCredential = await signInWithEmailAndPassword(
-      auth,
-      email,
-      password,
-    )
-    // Signed in
-    const user = userCredential.user
-    console.log({ user, userCredential })
-    // ...
+    const user = auth.currentUser
+    // await updatePassword(user!, newPassword)
+
+    // test to send email to reset!
+    await sendPasswordResetEmail(auth, 'kikki_sawn@yahoo.com')
+
     return user
   } catch (error: unknown) {
     // const errorCode = error.code
-    console.log('was it here?')
     // const errorMessage = error.message
     console.error(error)
-    throw new Error('Unauthorized: incorrect email or password')
+    throw new Error('Encountered an issue')
   }
 }
 
-function useLoginUser() {
+function useUpdatePassword() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: ({ email, password }: UserLogin) =>
-      loginUser({ email, password }),
+    mutationFn: ({ newPassword }: ChangePasswordProps) =>
+      changePassword({ newPassword }),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ['user'] })
       await queryClient.invalidateQueries({ queryKey: ['goals', 'list'] })
@@ -41,4 +41,4 @@ function useLoginUser() {
   })
 }
 
-export default useLoginUser
+export default useUpdatePassword

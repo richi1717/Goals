@@ -1,16 +1,31 @@
 import { Button, Stack, Typography } from '@mui/material'
-import { useState } from 'react'
 import useCreateUser from '../../api/users/useCreateUser'
 import useLoginUser from '../../api/users/useLoginUser'
 import updateUser from '../../api/users/updateUser'
-import useForgotPassword from '../../api/users/useForgotPassword'
+import useCurrentUser from '../../api/users/useCurrentUser'
+import { useSearchParams } from 'react-router-dom'
+import { useMemo } from 'react'
 
-export default function Welcome() {
-  const { mutate: loginUser } = useLoginUser()
-  const { mutate: sendForgotPassword } = useForgotPassword()
-
-  const [open, setOpen] = useState(false)
+export default function Verify() {
+  const [queryParams] = useSearchParams()
+  console.log({ queryParams })
+  const oobCode = queryParams.get('oobCode')
+  const mode = queryParams.get('mode')
+  console.log({ oobCode, mode })
+  const { data: user } = useCurrentUser()
+  const { mutate } = useLoginUser()
   const { mutate: createUser } = useCreateUser()
+
+  const title = useMemo(() => {
+    switch (mode) {
+      case 'resetPassword':
+        return 'Please create a new password'
+      case 'verifyEmail':
+        return 'Please login to verify your email'
+      default:
+        'Failure but we can make it work'
+    }
+  }, [mode])
 
   return (
     <Stack
@@ -24,7 +39,7 @@ export default function Welcome() {
       spacing={1}
       data-testid="welcomePage"
     >
-      <Button onClick={() => setOpen(true)}>Add new</Button>
+      <Typography>{title}</Typography>
       <Button
         onClick={() => {
           createUser({
@@ -38,9 +53,10 @@ export default function Welcome() {
       </Button>
       <Button
         onClick={() => {
-          loginUser({
+          mutate({
             email: 'kikki_sawn@yahoo.com',
             password: 'Password1717!',
+            verified: true,
           })
         }}
       >

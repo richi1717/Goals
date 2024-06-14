@@ -25,7 +25,7 @@ function ToggleColorMode() {
     newMode: 'light' | 'dark' | 'system',
   ) => {
     if (newMode) {
-      if (user) {
+      if (JSON.stringify(user) !== '{}') {
         mutate({ mode: newMode })
       }
 

@@ -20,9 +20,10 @@ import {
 import ToggleColorMode from '../../ToggleColorMode'
 import { useNavigate } from 'react-router-dom'
 import CloseIcon from '@mui/icons-material/Close'
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import useLogout from '../../../api/users/useLogout'
 import { SettingsContext } from '../../SettingsContext'
+import ChangePasswordDialog from './ChangePasswordDialog'
 
 interface DrawerProps {
   anchorEl: null | HTMLElement
@@ -38,6 +39,7 @@ export default function Drawer({
   const isAdminOpen = Boolean(anchorEl)
   const navigate = useNavigate()
   const { mutate } = useLogout()
+  const [open, setOpen] = useState(false)
   const { settings, dispatch } = useContext(SettingsContext)
 
   const filterBy = settings?.filterBy
@@ -121,6 +123,17 @@ export default function Drawer({
             <ListItem>
               <ListItemButton
                 onClick={() => {
+                  setOpen(true)
+                }}
+              >
+                <ListItemText primary="Change password" />
+              </ListItemButton>
+            </ListItem>
+          )}
+          {displayName && (
+            <ListItem>
+              <ListItemButton
+                onClick={() => {
                   mutate()
                   handleClose()
                   navigate('/')
@@ -132,6 +145,7 @@ export default function Drawer({
           )}
         </List>
       </Box>
+      <ChangePasswordDialog open={open} onClose={() => setOpen(false)} />
     </MuiDrawer>
   )
 }
