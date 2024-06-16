@@ -18,12 +18,10 @@ import {
   ListItemButton,
 } from '@mui/material'
 import ToggleColorMode from '../../ToggleColorMode'
-import { useNavigate } from 'react-router-dom'
 import CloseIcon from '@mui/icons-material/Close'
-import { useContext, useState } from 'react'
+import { useContext } from 'react'
 import useLogout from '../../../api/users/useLogout'
 import { SettingsContext } from '../../SettingsContext'
-import ChangePasswordDialog from './ChangePasswordDialog'
 
 interface DrawerProps {
   anchorEl: null | HTMLElement
@@ -37,9 +35,7 @@ export default function Drawer({
   displayName,
 }: DrawerProps) {
   const isAdminOpen = Boolean(anchorEl)
-  const navigate = useNavigate()
   const { mutate } = useLogout()
-  const [open, setOpen] = useState(false)
   const { settings, dispatch } = useContext(SettingsContext)
 
   const filterBy = settings?.filterBy
@@ -88,64 +84,62 @@ export default function Drawer({
             </ListItemText>
             <ToggleColorMode />
           </ListItem>
-          <ListItem>
-            <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">Filter by</InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={filterBy}
-                label="Filter by"
-                onChange={handleChange}
-              >
-                <MenuItem value="all">All</MenuItem>
-                <MenuItem value="daily">Daily</MenuItem>
-                <MenuItem value="weekly">Weekly</MenuItem>
-                <MenuItem value="monthly">Monthly</MenuItem>
-                <MenuItem value="yearly">Yearly</MenuItem>
-              </Select>
-            </FormControl>
-          </ListItem>
-          <ListItem>
-            <FormControlLabel
-              value="show"
-              control={
-                <Checkbox
-                  checked={hideComplete}
-                  onChange={() => dispatch({ type: 'updateHideComplete' })}
-                  inputProps={{ 'aria-label': 'controlled' }}
+          {displayName && (
+            <>
+              <ListItem>
+                <FormControl fullWidth>
+                  <InputLabel id="demo-simple-select-label">
+                    Filter by
+                  </InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={filterBy}
+                    label="Filter by"
+                    onChange={handleChange}
+                  >
+                    <MenuItem value="all">All</MenuItem>
+                    <MenuItem value="daily">Daily</MenuItem>
+                    <MenuItem value="weekly">Weekly</MenuItem>
+                    <MenuItem value="monthly">Monthly</MenuItem>
+                    <MenuItem value="yearly">Yearly</MenuItem>
+                  </Select>
+                </FormControl>
+              </ListItem>
+              <ListItem>
+                <FormControlLabel
+                  value="show"
+                  control={
+                    <Checkbox
+                      checked={hideComplete}
+                      onChange={() => dispatch({ type: 'updateHideComplete' })}
+                      inputProps={{ 'aria-label': 'controlled' }}
+                    />
+                  }
+                  label={`${hideComplete ? 'Show' : 'Hide'} completed`}
                 />
-              }
-              label={`${hideComplete ? 'Show' : 'Hide'} completed`}
-            />
-          </ListItem>
-          {displayName && (
-            <ListItem>
-              <ListItemButton
-                onClick={() => {
-                  setOpen(true)
-                }}
-              >
-                <ListItemText primary="Change password" />
-              </ListItemButton>
-            </ListItem>
-          )}
-          {displayName && (
-            <ListItem>
-              <ListItemButton
-                onClick={() => {
-                  mutate()
-                  handleClose()
-                  navigate('/')
-                }}
-              >
-                <ListItemText primary={`Logout ${displayName}`} />
-              </ListItemButton>
-            </ListItem>
+              </ListItem>
+              <ListItem>
+                <ListItemButton sx={{ ml: -1.5 }} href="/change-password">
+                  <ListItemText primary="Change password" />
+                </ListItemButton>
+              </ListItem>
+              <ListItem>
+                <ListItemButton
+                  sx={{ ml: -1.5 }}
+                  href="/"
+                  onClick={() => {
+                    mutate()
+                    handleClose()
+                  }}
+                >
+                  <ListItemText primary={`Logout ${displayName}`} />
+                </ListItemButton>
+              </ListItem>
+            </>
           )}
         </List>
       </Box>
-      <ChangePasswordDialog open={open} onClose={() => setOpen(false)} />
     </MuiDrawer>
   )
 }

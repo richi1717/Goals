@@ -7,7 +7,6 @@ import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import schema from './schema'
 import ControlledTextField from '../ControlledTextField'
-import { useState } from 'react'
 import { Typography } from '@mui/material'
 
 interface LoginUserFormDialogProps {
@@ -19,9 +18,8 @@ export default function LoginUserFormDialog({
   open,
   onClose,
 }: LoginUserFormDialogProps) {
-  const { mutate, isPending } = useLoginUser()
+  const { mutate, isPending, isError } = useLoginUser()
   const theme = useTheme()
-  const [hasError, setHasError] = useState(false)
   const fullScreen = useMediaQuery(theme.breakpoints.down('tablet'))
   const { control, handleSubmit, reset } = useForm({
     defaultValues: {
@@ -33,15 +31,10 @@ export default function LoginUserFormDialog({
   })
 
   const onSubmit = handleSubmit(async (values) => {
-    setHasError(false)
-
     await mutate(values, {
       onSuccess: () => {
         onClose()
         reset()
-      },
-      onError: () => {
-        setHasError(true)
       },
     })
   })
@@ -60,7 +53,7 @@ export default function LoginUserFormDialog({
       title="Login"
     >
       <Stack spacing={2}>
-        {hasError && (
+        {isError && (
           <Typography color="error">Incorrect email or password</Typography>
         )}
         <ControlledTextField name="email" control={control} label="Email" />

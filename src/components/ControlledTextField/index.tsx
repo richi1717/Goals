@@ -1,10 +1,15 @@
 import { Controller, FieldValues, UseControllerProps } from 'react-hook-form'
-import TextField from '@mui/material/TextField'
+import TextField, {
+  TextFieldProps,
+  TextFieldVariants,
+} from '@mui/material/TextField'
 
 interface ControlledTextFieldProps<T extends FieldValues>
   extends UseControllerProps<T> {
   label: string
   type?: string
+  variant?: TextFieldVariants
+  textFieldProps?: TextFieldProps
 }
 
 function ControlledTextField<T extends FieldValues>({
@@ -12,6 +17,8 @@ function ControlledTextField<T extends FieldValues>({
   control,
   label,
   type = 'text',
+  variant = 'outlined',
+  textFieldProps,
 }: ControlledTextFieldProps<T>) {
   return (
     <Controller
@@ -25,12 +32,16 @@ function ControlledTextField<T extends FieldValues>({
           helperText={error?.message ?? null}
           error={!!error}
           onChange={onChange}
-          onBlur={onBlur}
           value={value}
           fullWidth
           label={label}
-          variant="outlined"
+          variant={variant}
           type={type}
+          {...textFieldProps}
+          onBlur={(event) => {
+            textFieldProps?.onBlur?.(event)
+            onBlur()
+          }}
         />
       )}
     />

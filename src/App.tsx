@@ -11,6 +11,7 @@ import { SettingsProvider } from './components/SettingsContext'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import useCurrentUser from './api/users/useCurrentUser'
 import useUserSettings from './api/settings/useUserSettings'
+import getCookie from './utils/getCookie'
 
 function App() {
   const { data: user } = useCurrentUser()
@@ -19,10 +20,12 @@ function App() {
   const [mode, setMode] = React.useState<Mode>(
     prefersDarkMode ? 'dark' : 'light',
   )
-  const userMode = React.useMemo(
-    () => userSettings?.mode ?? mode,
-    [userSettings?.mode, mode],
-  )
+
+  const userMode = React.useMemo(() => {
+    const cookieMode = getCookie('mode')
+
+    return userSettings?.mode ?? cookieMode ?? mode
+  }, [userSettings?.mode, mode])
 
   const setColorMode = useCallback((mode: Mode) => setMode(mode), [setMode])
 

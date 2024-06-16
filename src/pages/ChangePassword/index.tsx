@@ -12,44 +12,42 @@ import { useForm } from 'react-hook-form'
 import StyledButton from '../../components/StyledButton'
 import { yupResolver } from '@hookform/resolvers/yup'
 import schema from './schema'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import Visibility from '@mui/icons-material/Visibility'
 import VisibilityOff from '@mui/icons-material/VisibilityOff'
-import useResetPassword from '../../api/users/useResetPassword'
+import useChangePassword from '../../api/users/useChangePassword'
 
-export default function ResetPasswordForm() {
+export default function ChangePasswordForm() {
   const navigate = useNavigate()
-  const [queryParams] = useSearchParams()
-  const oobCode = queryParams.get('oobCode')
-  // const mode = queryParams.get('mode')
+  const [showPassword, setShowPassword] = useState(false)
   const [showNewPassword, setShowNewPassword] = useState(false)
-  const [error, setError] = useState(!oobCode || false)
-  const { mutate: sendUpdatePassword, isError, status } = useResetPassword()
+  const [isSameError, setIsSameError] = useState(false)
+  const { mutate: sendUpdatePassword, isError, status } = useChangePassword()
   const {
     control,
     handleSubmit,
     formState: { isValid },
   } = useForm({
     resolver: yupResolver(schema),
-    defaultValues: { newPassword: '' },
+    defaultValues: { currentPassword: '', newPassword: '' },
     mode: 'onTouched',
   })
 
+  const handleClickShowPassword = () => setShowPassword((show) => !show)
   const handleClickShowNewPassword = () => setShowNewPassword((show) => !show)
 
   const onSubmit = handleSubmit((values) => {
-    if (oobCode) {
-      sendUpdatePassword(
-        { newPassword: values.newPassword, oobCode },
-        {
-          onSuccess: () => {
-            navigate('/')
-          },
-        },
-      )
+    setIsSameError(false)
+
+    if (values.newPassword === values.currentPassword) {
+      setIsSameError(true)
     } else {
-      setError(true)
+      sendUpdatePassword(values, {
+        onSuccess: () => {
+          navigate('/')
+        },
+      })
     }
   })
 
@@ -69,20 +67,38 @@ export default function ResetPasswordForm() {
       <Card sx={{ p: 1, width: 500 }} component="form" onSubmit={onSubmit}>
         <CardContent>
           <Stack spacing={2} alignItems="center">
-            <Typography variant="h4">Enter your new password</Typography>
-            {(isError || error) && (
+            <Typography variant="h4">Change your password</Typography>
+            {isError && (
               <Typography color="error">
-                Something went wrong, please go{' '}
-                <StyledButton
-                  sx={{ minWidth: 0, fontSize: '1rem', mt: '-3px' }}
-                  variant="text"
-                  onClick={() => navigate('/forgot-password')}
-                >
-                  here
-                </StyledButton>{' '}
-                and try again
+                Something went wrong, check you password and try again
               </Typography>
             )}
+            {isSameError && (
+              <Typography color="error">
+                New password cannot be the same as the current password
+              </Typography>
+            )}
+            <ControlledTextField
+              control={control}
+              name="currentPassword"
+              label="Current password"
+              type={showPassword ? 'text' : 'password'}
+              textFieldProps={{
+                onBlur: () => setShowPassword(false),
+                InputProps: {
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                },
+              }}
+            />
             <ControlledTextField
               control={control}
               name="newPassword"

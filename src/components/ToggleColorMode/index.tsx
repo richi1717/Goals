@@ -25,10 +25,11 @@ function ToggleColorMode() {
     newMode: 'light' | 'dark' | 'system',
   ) => {
     if (newMode) {
-      if (JSON.stringify(user) !== '{}') {
+      if (user && JSON.stringify(user) !== '{}') {
         mutate({ mode: newMode })
       }
 
+      document.cookie = `mode=${newMode}`
       setColorMode(newMode)
     }
   }
@@ -40,16 +41,17 @@ function ToggleColorMode() {
       exclusive
       onChange={handleChange}
       aria-label="Platform"
+      sx={{ width: 1 }}
     >
-      <ToggleButton value="light" sx={{ textTransform: 'none' }}>
+      <ToggleButton value="light" sx={{ textTransform: 'none', flex: 1 }}>
         <LightModeIcon sx={{ mr: 1 }} />
         Light
       </ToggleButton>
-      <ToggleButton value="system" sx={{ textTransform: 'none' }}>
+      <ToggleButton value="system" sx={{ textTransform: 'none', flex: 1 }}>
         <SettingsBrightnessIcon sx={{ mr: 1 }} />
         System
       </ToggleButton>
-      <ToggleButton value="dark" sx={{ textTransform: 'none' }}>
+      <ToggleButton value="dark" sx={{ textTransform: 'none', flex: 1 }}>
         <DarkModeIcon sx={{ mr: 1 }} />
         Dark
       </ToggleButton>

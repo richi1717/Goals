@@ -19,7 +19,6 @@ import ControlledTextField from '../ControlledTextField'
 import useCreateUser from '../../api/users/useCreateUser'
 import { yupResolver } from '@hookform/resolvers/yup'
 import schema from './schema'
-import { useState } from 'react'
 import { Typography } from '@mui/material'
 
 interface CreateUserFormDialogProps {
@@ -31,8 +30,7 @@ export default function CreateUserFormDialog({
   open,
   onClose,
 }: CreateUserFormDialogProps) {
-  const { mutate, isPending } = useCreateUser()
-  const [hasError, setHasError] = useState(false)
+  const { mutate, isPending, isError } = useCreateUser()
   const theme = useTheme()
   // const [showPassword, setShowPassword] = React.useState(false)
   // const [showConfirmPassword, setShowConfirmPassword] = React.useState(false)
@@ -52,8 +50,6 @@ export default function CreateUserFormDialog({
   // const handleClickShowPassword = () => setShowPassword((show) => !show)
 
   const onSubmit = handleSubmit(async (values) => {
-    setHasError(false)
-
     await mutate(
       {
         email: values.email,
@@ -64,9 +60,6 @@ export default function CreateUserFormDialog({
         onSuccess: () => {
           onClose()
           reset()
-        },
-        onError: () => {
-          setHasError(true)
         },
       },
     )
@@ -86,7 +79,7 @@ export default function CreateUserFormDialog({
       isPending={isPending}
     >
       <Stack spacing={2}>
-        {hasError && (
+        {isError && (
           <Typography color="error">
             Something went wrong, please try again later
           </Typography>
