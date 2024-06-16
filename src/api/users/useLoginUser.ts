@@ -36,7 +36,6 @@ export const loginUser = async ({
     return user
   } catch (error: unknown) {
     // const errorCode = error.code
-    console.log('was it here?')
     // const errorMessage = error.message
     console.error(error)
     throw new Error('Unauthorized: incorrect email or password')

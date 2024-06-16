@@ -13,6 +13,7 @@ import Drawer from './components/Drawer'
 import { useState } from 'react'
 import { deepPurple } from '@mui/material/colors'
 import useCurrentUser from '../../api/users/useCurrentUser'
+import HomeIcon from '@mui/icons-material/Home'
 
 const getName = (name: string) => {
   const rgx = new RegExp(/(\p{L}{1})\p{L}+/, 'gu')
@@ -43,7 +44,16 @@ export default function Header() {
       <AppBar position="fixed">
         <Container>
           <Toolbar disableGutters>
-            <Stack direction="row" alignItems="center" sx={{ flexGrow: 1 }} />
+            <Stack direction="row" alignItems="center" sx={{ flexGrow: 1 }}>
+              <IconButton
+                href="/goals"
+                sx={{
+                  color: 'common.white',
+                }}
+              >
+                <HomeIcon />
+              </IconButton>
+            </Stack>
             <Stack direction="row" flexGrow={0} alignItems="center">
               <Box sx={{ p: 2 }}>
                 <IconButton

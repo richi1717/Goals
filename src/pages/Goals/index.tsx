@@ -1,5 +1,5 @@
 import { Button, Stack, Typography } from '@mui/material'
-import { useContext, useMemo, useState } from 'react'
+import { useContext, useEffect, useMemo, useState } from 'react'
 import GoalDisplay from './components/GoalDisplay'
 import useGoals from '../../api/goals/useGoals'
 import useCreateUser from '../../api/users/useCreateUser'
@@ -9,6 +9,7 @@ import useCurrentUser from '../../api/users/useCurrentUser'
 import { SettingsContext } from '../../components/SettingsContext'
 import AddGoalFormDialog from './components/AddGoalFormDialog'
 import { sortFrequency } from './utils'
+import { useNavigate } from 'react-router-dom'
 
 function separateByRecurring(goals?: Goal[]) {
   const recurringGoals: Goal[] = []
@@ -20,7 +21,8 @@ function separateByRecurring(goals?: Goal[]) {
 }
 
 export default function Goals() {
-  const { data: user } = useCurrentUser()
+  const { data: user, isError } = useCurrentUser()
+  const navigate = useNavigate()
   const { mutate } = useLoginUser()
   const { data: goals } = useGoals(user?.uid)
   const [open, setOpen] = useState(false)
@@ -29,6 +31,12 @@ export default function Goals() {
   const { settings } = useContext(SettingsContext)
   const hideComplete = settings?.hideComplete
   const filterBy = settings?.filterBy
+
+  useEffect(() => {
+    if (isError) {
+      navigate('/')
+    }
+  }, [isError, navigate])
 
   const filteredGoals = useMemo(
     () => goals?.filter((goal) => (hideComplete ? !goal.completed : true)),
