@@ -16,7 +16,7 @@ export default function Layout() {
   //   )
 
   return (
-    <Stack height={1} alignItems="center" data-testid="yooooo">
+    <Stack height={1} alignItems="center">
       <Header />
       <Outlet />
     </Stack>

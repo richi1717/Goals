@@ -4,6 +4,8 @@ import {
   CardContent,
   Checkbox,
   FormControlLabel,
+  IconButton,
+  InputAdornment,
   Stack,
   Typography,
 } from '@mui/material'
@@ -11,6 +13,8 @@ import { useEffect, useState } from 'react'
 import useLoginUser from '../../api/users/useLoginUser'
 // import useForgotPassword from '../../api/users/useForgotPassword'
 import ControlledTextField from '../../components/ControlledTextField'
+import Visibility from '@mui/icons-material/Visibility'
+import VisibilityOff from '@mui/icons-material/VisibilityOff'
 import { useForm } from 'react-hook-form'
 import StyledButton from '../../components/StyledButton'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
@@ -23,9 +27,15 @@ export default function LoginForm() {
   const { mutate: loginUser, isError, status } = useLoginUser()
   const emailFromCookie = getCookie()
   const [checked, setChecked] = useState(Boolean(emailFromCookie) ?? false)
+  const [showPassword, setShowPassword] = useState(false)
   const navigate = useNavigate()
   // const { mutate: sendForgotPassword } = useForgotPassword()
-  const loginForm = useForm({
+  const {
+    handleSubmit,
+    reset,
+    control,
+    formState: { isValid },
+  } = useForm({
     resolver: yupResolver(schema),
     defaultValues: { email: emailFromCookie ?? '', password: '' },
     mode: 'onTouched',
@@ -35,13 +45,17 @@ export default function LoginForm() {
     document.cookie = 'beenHereBefore=true'
   }, [])
 
-  const onSubmit = loginForm.handleSubmit((values) => {
-    if (checked) {
-      document.cookie = `rememberMe=${values.email}`
-    }
+  const handleClickShowPassword = () => setShowPassword((show) => !show)
+
+  const onSubmit = handleSubmit((values) => {
     loginUser(values, {
       onSuccess: () => {
-        loginForm.reset()
+        if (checked) {
+          document.cookie = `rememberMe=${values.email}`
+          reset({ email: values.email })
+        } else {
+          reset({ email: '' })
+        }
         navigate('/goals')
       },
     })
@@ -69,16 +83,27 @@ export default function LoginForm() {
             {isError && (
               <Typography color="error">Incorrect email or password</Typography>
             )}
+            <ControlledTextField control={control} name="email" label="Email" />
             <ControlledTextField
-              control={loginForm.control}
-              name="email"
-              label="Email"
-            />
-            <ControlledTextField
-              control={loginForm.control}
+              control={control}
               name="password"
-              label="Password"
-              type="password"
+              label="password"
+              type={showPassword ? 'text' : 'password'}
+              textFieldProps={{
+                onBlur: () => setShowPassword(false),
+                InputProps: {
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                },
+              }}
             />
             <FormControlLabel
               value="show"
@@ -105,7 +130,7 @@ export default function LoginForm() {
             <StyledButton
               type="submit"
               fullWidth
-              disabled={!loginForm.formState.isValid}
+              disabled={!isValid}
               loading={status === 'pending'}
             >
               Sign in

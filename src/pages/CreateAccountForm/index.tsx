@@ -65,14 +65,21 @@ export default function CreateAccountForm() {
             {isError && (
               <Typography color="error">Incorrect email or password</Typography>
             )}
-            <ControlledTextField control={control} name="email" label="Email" />
+            <ControlledTextField
+              control={control}
+              name="email"
+              label="Email"
+              required
+            />
             <ControlledTextField
               control={control}
               name="displayName"
               label="Display name"
+              required
             />
             <ControlledTextField
               control={control}
+              required
               name="password"
               label="Password"
               type={showPassword ? 'text' : 'password'}

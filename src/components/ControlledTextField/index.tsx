@@ -10,6 +10,7 @@ interface ControlledTextFieldProps<T extends FieldValues>
   type?: string
   variant?: TextFieldVariants
   textFieldProps?: TextFieldProps
+  required?: boolean
 }
 
 function ControlledTextField<T extends FieldValues>({
@@ -19,6 +20,7 @@ function ControlledTextField<T extends FieldValues>({
   type = 'text',
   variant = 'outlined',
   textFieldProps,
+  required = false,
 }: ControlledTextFieldProps<T>) {
   return (
     <Controller
@@ -37,6 +39,7 @@ function ControlledTextField<T extends FieldValues>({
           label={label}
           variant={variant}
           type={type}
+          required={required}
           {...textFieldProps}
           onBlur={(event) => {
             textFieldProps?.onBlur?.(event)

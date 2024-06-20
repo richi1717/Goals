@@ -46,7 +46,7 @@ function App() {
       <ThemeProvider theme={theme}>
         <SettingsProvider>
           <CssBaseline />
-          <Stack sx={{ width: '100vw', height: '100vh' }} data-testid="yaaa">
+          <Stack sx={{ width: '100vw', height: '100vh' }}>
             <RouterProvider router={Router} />
           </Stack>
           <ReactQueryDevtools initialIsOpen={false} />

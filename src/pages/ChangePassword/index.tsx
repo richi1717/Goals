@@ -79,6 +79,7 @@ export default function ChangePasswordForm() {
               </Typography>
             )}
             <ControlledTextField
+              required
               control={control}
               name="currentPassword"
               label="Current password"
@@ -100,6 +101,7 @@ export default function ChangePasswordForm() {
               }}
             />
             <ControlledTextField
+              required
               control={control}
               name="newPassword"
               label="New password"
